@@ -54,10 +54,12 @@ class OwnerControllerTest {
                         case "%Doe%":
                             return List.of(new Owner(1L, "John", "Doe"));
                         case "%DontFindMe%":
+                        case "%%":
                             return Collections.emptyList();
                         case "%FindMultiple%":
                             return List.of(new Owner(1L, "John", "Doe"),
                                     new Owner(2L, "John", "Doe"));
+
                     }
                     throw new RuntimeException("No case satisfied");
                 });
@@ -104,6 +106,16 @@ class OwnerControllerTest {
         String result = controller.processFindForm(owner, bindingResult, model);
 
         assertThat(stringArgumentCaptor.getValue()).isEqualTo("%DontFindMe%");
+        assertThat(result).isEqualTo(FIND_OWNERS);
+    }
+
+    @Test
+    void processFindFormWithLastNameNull() {
+        Owner owner = new Owner(1L, "John", null);
+
+        String result = controller.processFindForm(owner, bindingResult, model);
+
+        assertThat(stringArgumentCaptor.getValue()).isEqualTo("%%");
         assertThat(result).isEqualTo(FIND_OWNERS);
     }
 
