@@ -49,7 +49,7 @@ class OwnerControllerTest {
     void setUp() {
         lenient().when(service.findAllByLastNameLike(stringArgumentCaptor.capture()))
                 .thenAnswer(invocation -> {
-                    String argument = stringArgumentCaptor.getValue();
+                    String argument = stringArgumentCaptor.getAllValues().get(0);
                     switch (argument) {
                         case "%Doe%":
                             return List.of(new Owner(1L, "John", "Doe"));
