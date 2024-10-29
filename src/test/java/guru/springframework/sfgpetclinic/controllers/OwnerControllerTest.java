@@ -8,10 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -122,11 +119,16 @@ class OwnerControllerTest {
     @Test
     void processFindFormWithMultipleOwners() {
         Owner owner = new Owner(1L, "John", "FindMultiple");
-
+        InOrder inOrder=inOrder(service,
+                model);
         String result = controller.processFindForm(owner, bindingResult, model);
 
         assertThat(result).isEqualTo(OWNERS_LIST);
         assertThat(stringArgumentCaptor.getValue()).isEqualTo("%FindMultiple%");
+        inOrder.verify(service)
+                .findAllByLastNameLike(anyString());
+        inOrder.verify(model)
+                .addAttribute(anyString(), anyList());
     }
 
 }
